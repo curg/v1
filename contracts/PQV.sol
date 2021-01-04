@@ -213,8 +213,8 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function voteAt(
         uint256 ballotNum,
-        uint256[] calldata proposals,
-        uint256[] calldata weights
+        uint256[] calldata proposals_,
+        uint256[] calldata weights_
     ) external override returns (bool) {
         Ballot storage ballot = _ballots[ballotNum];
         Voter storage sender = ballot.voters[_msgSender()];
@@ -223,16 +223,16 @@ contract PQV is Context, MultiOwnable, IQV {
         require(!ballot.ended, "The ballot is ended.");
         require(ballot.currentTime + ballot.timeLimit > now, "Exceed time limit.");
         require(!sender.voted, "You already voted.");
-        require(_sum(weights) <= sender.weights, "Exceed the rights.");
+        require(_sum(weights_) <= sender.weights, "Exceed the rights.");
 
         sender.voted = true;
 
         // If 'i' is out of the range of the array,
         // this will throw automatically and revert all changes
-        for (uint256 i = 0; i < proposals.length; i++) {
-            ballot.proposals[i].voteCounts.push(weights[i]);
+        for (uint256 i = 0; i < proposals_.length; i++) {
+            ballot.proposals[proposals_[i]].voteCounts.push(weights_[i]);
 
-            emit Vote(_msgSender(), ballotNum, proposals[i], weights[i]);
+            emit Vote(_msgSender(), ballotNum, proposals_[i], weights_[i]);
         }
 
         return true;
