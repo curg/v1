@@ -282,11 +282,15 @@ contract PQV is Context, MultiOwnable, IQV {
                     );
                 }
 
-                if (voteCount > winningVoteCount) {         // new winning proposal
+                if (
+                    voteCount > winningVoteCount
+                ) { // new winning proposal
                     winningVoteCount = voteCount;
                     ballot.winningProposal = p;
                 }
-                else if (voteCount == winningVoteCount) {   // pick randomly
+                else if (
+                    (voteCount != 0) && (voteCount == winningVoteCount)
+                ) { // pick randomly
                     (bool check, bytes memory data) = address(_randomAddress).call(
                         abi.encodeWithSelector(RANDOM)
                     );
