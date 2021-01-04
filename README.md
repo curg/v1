@@ -2,6 +2,10 @@
 
 *On Baobab testnet,*
 
+## Owner
+
+`0xd54f2f3de48c667a9a3a7a7b3c908171a9668c10`
+
 ## Address
 
 * CVT: `0x00b5406FA276D39aac86f4F19E268f21393E8ABF`
@@ -15,6 +19,8 @@
 ## Contact
 
 Please contact [lukepark327@gmail.com](mailto:lukepark327@gmail.com) if you need an ownership.
+
+---
 
 # Docgen
 
