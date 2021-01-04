@@ -12,6 +12,10 @@
 
 * Converter: `0x471b6755A90aB77Ba362789CDBB7c5481A50e258`
 
+## Contact
+
+Please contact [lukepark327@gmail.com](mailto:lukepark327@gmail.com) if you need an ownership.
+
 # Docgen
 
 ## Install
