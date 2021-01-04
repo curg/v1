@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity >=0.5.0 <0.6.0;
 
-import "../access/MultiOwnable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "./MultiOwnable.sol";
+import "./ERC20.sol";
 
 
 /**
@@ -80,7 +80,7 @@ contract CVT is MultiOwnable, ERC20 {
     function addOwnership(
         address account,
         uint8 level
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _addOwnership(account, level);
 
         return true;
@@ -91,7 +91,7 @@ contract CVT is MultiOwnable, ERC20 {
      */
     function deleteOwnership(
         address account
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _deleteOwnership(account);
 
         return true;
@@ -103,7 +103,7 @@ contract CVT is MultiOwnable, ERC20 {
     function transferOwnership(
         address oldOwner,
         address newOwner
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _transferOwnership(oldOwner, newOwner);
 
         return true;
@@ -115,7 +115,7 @@ contract CVT is MultiOwnable, ERC20 {
     function changeOwnershipLevel(
         address account,
         uint8 level
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _changeOwnershipLevel(account, level);
 
         return true;

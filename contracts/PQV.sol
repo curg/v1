@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity >=0.5.0 <0.6.0;
 
-import "openzeppelin-solidity/contracts/GSN/Context.sol";
-import "./access/MultiOwnable.sol";
+import "./Context.sol";
+import "./MultiOwnable.sol";
 import "./IQV.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/utils/Address.sol";
-import "./token/CVT.sol";
-import "./random/Random.sol";
+import "./SafeMath.sol";
+import "./Address.sol";
+import "./CVT.sol";
+import "./Random.sol";
 
 
 /**
@@ -60,7 +60,8 @@ contract PQV is Context, MultiOwnable, IQV {
     uint256 private _exponent = 2;
     uint256 private _minimumTimeLimit = 1 hours;
 
-    Ballot[] private _ballots;
+    uint256 public ballotAmount = 0;
+    mapping(uint256 => Ballot) private _ballots;
 
     /**
      * @dev Sets the 'CVT' and 'Random' contracts.
@@ -93,7 +94,7 @@ contract PQV is Context, MultiOwnable, IQV {
     function createBallot(
         bytes32 ballotName,
         bytes32[] calldata proposalNames
-    ) external override returns (bool) {
+    ) external returns (bool) {
         _createBallot(ballotName, proposalNames, _minimumTimeLimit);
 
         return true;
@@ -142,8 +143,7 @@ contract PQV is Context, MultiOwnable, IQV {
             "`ballotTimeLimit` MUST be higher than or at least same as `_minimumTimeLimit`."
         );
 
-        _ballots.push();
-        Ballot storage ballot = _ballots[_ballots.length - 1];
+        Ballot storage ballot = _ballots[ballotAmount];
 
         ballot.name = ballotName;
         ballot.currentTime = now;
@@ -156,6 +156,9 @@ contract PQV is Context, MultiOwnable, IQV {
 
             emit Create(ballotName, proposalNames[i]);
         }
+        
+        // ballotAmount = ballotAmount.add(1);
+        ballotAmount++;
     }
 
     /**
@@ -174,7 +177,8 @@ contract PQV is Context, MultiOwnable, IQV {
     function joinAt(
         uint256 ballotNum,
         uint256 amount
-    ) public override returns (bool) {
+    ) public returns (bool) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Ballot storage ballot = _ballots[ballotNum];
 
         // conditions
@@ -215,7 +219,7 @@ contract PQV is Context, MultiOwnable, IQV {
         uint256 ballotNum,
         uint256[] calldata proposals_,
         uint256[] calldata weights_
-    ) external override returns (bool) {
+    ) external returns (bool) {
         Ballot storage ballot = _ballots[ballotNum];
         Voter storage sender = ballot.voters[_msgSender()];
 
@@ -252,6 +256,7 @@ contract PQV is Context, MultiOwnable, IQV {
     function tallyUp(
         uint256 ballotNum
     ) public returns (bool) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Ballot storage ballot = _ballots[ballotNum];
 
         // conditions
@@ -347,6 +352,7 @@ contract PQV is Context, MultiOwnable, IQV {
     function _totalVoteCountOf(
         uint256 ballotNum
     ) internal view returns (uint256 totalVoteCounts_) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Ballot storage ballot = _ballots[ballotNum];
 
         for (uint256 i=0; i<ballot.proposals.length; i++) {
@@ -361,10 +367,11 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function voterAt(
         uint256 ballotNum
-    ) public view override returns (
+    ) public view returns (
         uint256 weights_,
         bool voted_
     ) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Ballot storage ballot = _ballots[ballotNum];
 
         weights_ = ballot.voters[_msgSender()].weights;
@@ -375,10 +382,10 @@ contract PQV is Context, MultiOwnable, IQV {
      * @dev Returns the amount of ballots in existence.
      */
     function totalBallots(
-    ) public view override returns (
+    ) public view returns (
         uint256 length_
     ) {
-        length_ = _ballots.length;
+        length_ = ballotAmount;
     }
 
     /**
@@ -386,9 +393,10 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function proposalsLengthOf(
         uint256 ballotNum
-    ) public view override returns (
+    ) public view returns (
         uint256 length_
     ) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         length_ = _ballots[ballotNum].proposals.length;
     }
 
@@ -399,9 +407,10 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function proposalsOf(
         uint256 ballotNum
-    ) public view override returns (
+    ) public view returns (
         bytes32[] memory names_
     ) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         uint256 length_ = proposalsLengthOf(ballotNum);
 
         names_ = new bytes32[](length_);
@@ -419,9 +428,10 @@ contract PQV is Context, MultiOwnable, IQV {
     function proposalOf(
         uint256 ballotNum,
         uint256 proposalNum
-    ) public view override returns (
+    ) public view returns (
         bytes32 name_
     ) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Proposal storage proposal = _ballots[ballotNum].proposals[proposalNum];
         name_ = proposal.name;
     }
@@ -435,9 +445,10 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function winningProposalOf(
         uint256 ballotNum
-    ) public view override returns (
+    ) public view returns (
         uint256 winningProposal_
     ) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Ballot storage ballot = _ballots[ballotNum];
 
         require(ballot.ended, "Not yet.");
@@ -454,7 +465,7 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function winnerNameOf(
         uint256 ballotNum
-    ) public view override returns (
+    ) public view returns (
         bytes32 winnerName_
     ) {
         Ballot storage ballot = _ballots[ballotNum];
@@ -476,6 +487,7 @@ contract PQV is Context, MultiOwnable, IQV {
         bool ended_,
         uint256 winningProposal_
     ) {
+        require(ballotNum < ballotAmount, "Exceed ballot range.");
         Ballot storage ballot = _ballots[ballotNum];
         name_ = ballot.name;
         currentTime_ = ballot.currentTime;
@@ -647,7 +659,7 @@ contract PQV is Context, MultiOwnable, IQV {
     function addOwnership(
         address account,
         uint8 level
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _addOwnership(account, level);
 
         return true;
@@ -658,7 +670,7 @@ contract PQV is Context, MultiOwnable, IQV {
      */
     function deleteOwnership(
         address account
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _deleteOwnership(account);
 
         return true;
@@ -670,7 +682,7 @@ contract PQV is Context, MultiOwnable, IQV {
     function transferOwnership(
         address oldOwner,
         address newOwner
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _transferOwnership(oldOwner, newOwner);
 
         return true;
@@ -682,7 +694,7 @@ contract PQV is Context, MultiOwnable, IQV {
     function changeOwnershipLevel(
         address account,
         uint8 level
-    ) public virtual onlyOwner(OWNERBLE) returns (bool) {
+    ) public onlyOwner(OWNERBLE) returns (bool) {
         _changeOwnershipLevel(account, level);
 
         return true;

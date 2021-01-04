@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity >=0.5.0 <0.6.0;
 
-import "openzeppelin-solidity/contracts/GSN/Context.sol";
+import "./Context.sol";
 import "./IOwnable.sol";
 
 
@@ -46,7 +46,7 @@ contract MultiOwnable is Context, IOwnable {
      */
     function levelOf(
         address owner
-    ) public view override returns (uint8) {
+    ) public view returns (uint8) {
         return _owners[owner];
     }
 
@@ -56,7 +56,7 @@ contract MultiOwnable is Context, IOwnable {
     function isValid(
         address owner,
         uint8 level
-    ) public view override returns (bool) {
+    ) public view returns (bool) {
         return _owners[owner] >= level;
     }
 
@@ -65,7 +65,7 @@ contract MultiOwnable is Context, IOwnable {
      */
     modifier onlyOwner(
         uint8 level
-    ) override {
+    ) {
         require(_owners[_msgSender()] >= level, "Ownable: caller has no accessability.");
         _;
     }

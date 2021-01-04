@@ -76,7 +76,7 @@ Requirements:
 - `ballotNum` cannot be out of the range of array.
 - the caller MUST have a balance of at least `amount`.
 
-### `voteAt(uint256 ballotNum, uint256[] proposals, uint256[] weights) → bool` (external)
+### `voteAt(uint256 ballotNum, uint256[] proposals_, uint256[] weights_) → bool` (external)
 
 
 

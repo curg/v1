@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/curg/v1#readme",
   "dependencies": {
-    "openzeppelin-solidity": "^3.3.0"
+    "solc": "^0.5.17",
+    "solidity-docgen": "^0.5.11"
   }
 }

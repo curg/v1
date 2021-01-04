@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 
 /**
  * @dev Abstarct contract of the Quadratic Voting (QV).
  */
-abstract contract IQV {
+contract IQV {
     /**
      * @dev Creates the ballot with `ballotName` and 
      * `proposalNames` which is the array of each proposal's name.
@@ -18,7 +18,7 @@ abstract contract IQV {
     function createBallot(
         bytes32 ballotName,
         bytes32[] calldata proposalNames
-    ) external virtual returns (bool);
+    ) external returns (bool);
 
     /**
      * @dev Joins in the `ballotNum`-th ballot by burning `amount` of tokens.
@@ -30,7 +30,7 @@ abstract contract IQV {
     function joinAt(
         uint256 ballotNum,
         uint256 amount
-    ) public virtual returns (bool);
+    ) public returns (bool);
 
     /**
      * @dev Votes at the `proposals` with using `weights` tokens in the `ballotNum`-th ballot.
@@ -43,7 +43,7 @@ abstract contract IQV {
         uint256 ballotNum,
         uint256[] calldata proposals,
         uint256[] calldata weights
-    ) external virtual returns (bool);
+    ) external returns (bool);
 
     /**
      * @dev Returns the amount of weights and voting flag.
@@ -52,7 +52,7 @@ abstract contract IQV {
      */
     function voterAt(
         uint256 ballotNum
-    ) public view virtual returns (
+    ) public view returns (
         uint256 weights_,
         bool voted_
     );
@@ -62,7 +62,7 @@ abstract contract IQV {
      */
     function totalBallots(
         // ...
-    ) public view virtual returns (
+    ) public view returns (
         uint256 length_
     );
 
@@ -71,7 +71,7 @@ abstract contract IQV {
      */
     function proposalsLengthOf(
         uint256 ballotNum
-    ) public view virtual returns (
+    ) public view returns (
         uint256 length_
     );
 
@@ -80,7 +80,7 @@ abstract contract IQV {
      */
     function proposalsOf(
         uint256 ballotNum
-    ) public view virtual returns (
+    ) public view returns (
         bytes32[] memory names_
     );
 
@@ -90,7 +90,7 @@ abstract contract IQV {
     function proposalOf(
         uint256 ballotNum,
         uint256 proposalNum
-    ) public view virtual returns (
+    ) public view returns (
         bytes32 name_
     );
 
@@ -99,7 +99,7 @@ abstract contract IQV {
      */
     function winningProposalOf(
         uint256 ballotNum
-    ) public view virtual returns (
+    ) public view returns (
         uint256 winningProposal_
     );
 
@@ -108,7 +108,7 @@ abstract contract IQV {
      */
     function winnerNameOf(
         uint256 ballotNum
-    ) public view virtual returns (
+    ) public view returns (
         bytes32 winnerName_
     );
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 
 /**
@@ -10,7 +10,7 @@ pragma solidity >=0.6.0 <0.8.0;
  *
  * - openzeppelin-solidity/contracts/access/Ownable.sol
  */
-abstract contract IOwnable {
+contract IOwnable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner, uint8 level);
 
     /**
@@ -18,7 +18,7 @@ abstract contract IOwnable {
      */
     function levelOf(
         address owner
-    ) public view virtual returns (uint8);
+    ) public view returns (uint8);
 
     /**
      * @dev Returns the validation of the owner.
@@ -26,12 +26,12 @@ abstract contract IOwnable {
     function isValid(
         address owner,
         uint8 level
-    ) public view virtual returns (bool);
+    ) public view returns (bool);
 
     /**
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner (
         uint8 level
-    ) virtual { _; }
+    ) { _; }
 }
